@@ -1,0 +1,13 @@
+name = "parquet-glib"
+version = "0.1.0"
+license = "license"
+author = "Ludovico Nicotina"
+maintainer = "ludovico.nicotina@gmail.com"
+copyright = "Copyright 2023, Ludovico Nicotina"
+[build]
+link = ["parquet-glib", "parquet", "arrow-glib", "gobject-2.0", "glib-2.0", "arrow"]
+auto-executables = true
+auto-tests = true
+auto-examples = true
+[install]
+library = false
