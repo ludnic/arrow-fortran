@@ -5,13 +5,15 @@ program main
     garrow_array_builder_finish, garrow_int16_array_builder_new, garrow_int16_array_builder_append_values
   
   use libarrow_glib, only: garrow_field_new, garrow_int8_data_type_new, garrow_int16_data_type_new, &
-    garrow_schema_new, garrow_field_export
+    garrow_schema_new, garrow_schema_add_field
+
+  use g, only: g_list_alloc, g_list_append
   implicit none
 
   type(c_ptr) :: int8builder, int16builder
   type(c_ptr) :: days, months, years
   type(c_ptr) :: field_days, field_months, field_years
-  type(c_ptr) :: fields_array(3)
+  type(c_ptr) :: fields_list
   type(c_ptr) :: schema 
   integer(c_int) :: status
   type(c_ptr) :: error
@@ -70,8 +72,11 @@ program main
   field_months = garrow_field_new('months'//c_null_char, garrow_int8_data_type_new())
   field_years = garrow_field_new('years'//c_null_char, garrow_int16_data_type_new())
 
-  fields_array = [field_days, field_months, field_years]
+  fields_list = g_list_alloc()
+  fields_list = g_list_append(fields_list, field_days)
+  fields_list = g_list_append(fields_list, field_months)
+  fields_list = g_list_append(fields_list, field_years)
 
-  schema = garrow_schema_new(fields_array)
+  schema = garrow_schema_new(fields_list)
 
 end program main
