@@ -12,3 +12,13 @@ The basic c++ example is provided in the `cpp_example` folder along with a Makef
 The project includes a development environment which includes all the dependencies. Using VSCode and Docker it should be as simple as opening the project in a development container with the remote development extension.
 
 Without using the included docker container linking against the arrow libraries requires installing the libraries, instructions are available for different environments on the [arrow installation page](https://arrow.apache.org/install/).
+
+Run the example in main.f90 with `fpm run`
+
+Run the cpp_example with: 
+
+```shell
+cd cpp_example
+make 
+../bin/ArrowTest
+```
