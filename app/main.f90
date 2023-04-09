@@ -11,7 +11,7 @@ program main
   type(c_ptr) :: int8builder, int16builder
   type(c_ptr) :: days, months, years
   type(c_ptr) :: field_days, field_months, field_years
-  type(c_ptr), target, save :: fields_array(3)
+  type(c_ptr) :: fields_array(3)
   type(c_ptr) :: schema 
   integer(c_int) :: status
   type(c_ptr) :: error
@@ -72,7 +72,6 @@ program main
 
   fields_array = [field_days, field_months, field_years]
 
-  print*, fields_array
-  schema = garrow_schema_new(c_loc(fields_array))
+  schema = garrow_schema_new(fields_array)
 
 end program main
