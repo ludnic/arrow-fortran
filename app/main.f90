@@ -5,9 +5,12 @@ program main
     garrow_array_builder_finish, garrow_int16_array_builder_new, garrow_int16_array_builder_append_values
   
   use libarrow_glib, only: garrow_field_new, garrow_int8_data_type_new, garrow_int16_data_type_new, &
-    garrow_schema_new, garrow_schema_add_field
+    garrow_schema_new, garrow_schema_add_field, garrow_field_get_name, garrow_field_get_data_type, &
+    garrow_field_to_string
 
-  use g, only: g_list_alloc, g_list_append
+  use g, only: g_list_alloc, g_list_append, g_list_first
+
+  use util, only: c_f_str_ptr
   implicit none
 
   type(c_ptr) :: int8builder, int16builder
@@ -72,11 +75,22 @@ program main
   field_months = garrow_field_new('months'//c_null_char, garrow_int8_data_type_new())
   field_years = garrow_field_new('years'//c_null_char, garrow_int16_data_type_new())
 
-  fields_list = g_list_alloc()
-  fields_list = g_list_append(fields_list, field_days)
-  fields_list = g_list_append(fields_list, field_months)
-  fields_list = g_list_append(fields_list, field_years)
+  block 
+    character(len=:), allocatable :: name
+    call c_f_str_ptr(garrow_field_to_string(field_days), name)
+    print*, name
 
-  schema = garrow_schema_new(fields_list)
+    call c_f_str_ptr(garrow_field_to_string(field_months), name)
+    print*, name
+
+    call c_f_str_ptr(garrow_field_to_string(field_years), name)
+    print*, name
+  end block
+
+  ! fields_list = g_list_alloc()
+  ! fields_list = g_list_append(fields_list, field_days)
+  ! fields_list = g_list_append(fields_list, field_months)
+  ! fields_list = g_list_append(fields_list, field_years)
+  ! schema = garrow_schema_new(fields_list)
 
 end program main
