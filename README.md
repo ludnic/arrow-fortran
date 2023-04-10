@@ -20,5 +20,5 @@ Run the cpp_example with:
 ```shell
 cd cpp_example
 make 
-../bin/ArrowTest
+../bin/arrow_data_structures_cpp
 ```
