@@ -1,5 +1,5 @@
 # arrow-fortran
-Test automatic bindings to the C API for the arrow project. 
+Test automatic bindings to the C API for the [arrow project](https://github.com/apache/arrow). 
 
 The interfaces have been generated with the [cfwrapper script](https://github.com/vmagnin/gtk-fortran/wiki/How-to-hack-the-cfwrapper) from the gtk-fortran project. 
 
