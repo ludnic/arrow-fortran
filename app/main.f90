@@ -68,7 +68,7 @@ program main
     status = garrow_int16_array_builder_append_values(int16builder, c_loc(years_raw), n, &
       c_loc(is_valids), n, error)
 
-    years = garrow_array_builder_finish(int8builder, error)
+    years = garrow_array_builder_finish(int16builder, error)
   end block
 
   field_days = garrow_field_new('days'//c_null_char, garrow_int8_data_type_new())
@@ -87,10 +87,10 @@ program main
     print*, name
   end block
 
-  ! fields_list = g_list_alloc()
-  ! fields_list = g_list_append(fields_list, field_days)
-  ! fields_list = g_list_append(fields_list, field_months)
-  ! fields_list = g_list_append(fields_list, field_years)
-  ! schema = garrow_schema_new(fields_list)
+  fields_list = g_list_alloc()
+  fields_list = g_list_append(fields_list, field_days)
+  fields_list = g_list_append(fields_list, field_months)
+  fields_list = g_list_append(fields_list, field_years)
+  schema = garrow_schema_new(fields_list)
 
 end program main
