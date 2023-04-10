@@ -6,9 +6,9 @@ program main
   
   use libarrow_glib, only: garrow_field_new, garrow_int8_data_type_new, garrow_int16_data_type_new, &
     garrow_schema_new, garrow_schema_add_field, garrow_field_get_name, garrow_field_get_data_type, &
-    garrow_field_to_string
+    garrow_field_to_string, garrow_schema_to_string
 
-  use g, only: g_list_alloc, g_list_append, g_list_first
+  use g, only: g_list_alloc, g_list_append, g_list_first, g_free, g_object_unref
 
   use util, only: c_f_str_ptr
   implicit none
@@ -18,12 +18,10 @@ program main
   type(c_ptr) :: field_days, field_months, field_years
   type(c_ptr) :: fields_list
   type(c_ptr) :: schema 
-  integer(c_int) :: status
+  integer(c_int) :: status 
   type(c_ptr) :: error
 
-  int8builder = c_null_ptr
   int8builder = garrow_int8_array_builder_new()
-
   block 
     integer(int8), target :: days_raw(5)
     integer(c_int64_t) :: n
@@ -52,10 +50,9 @@ program main
     c_loc(is_valids), n, error)
     months = garrow_array_builder_finish(int8builder, error)
   end block
+  call g_object_unref(int8builder)
 
-  int16builder = c_null_ptr
   int16builder = garrow_int16_array_builder_new()
-
   block 
     integer(int16), target :: years_raw(5)
     integer(c_int64_t) :: n
@@ -70,27 +67,23 @@ program main
 
     years = garrow_array_builder_finish(int16builder, error)
   end block
+  call g_object_unref(int16builder)
 
   field_days = garrow_field_new('days'//c_null_char, garrow_int8_data_type_new())
   field_months = garrow_field_new('months'//c_null_char, garrow_int8_data_type_new())
   field_years = garrow_field_new('years'//c_null_char, garrow_int16_data_type_new())
-
-  block 
-    character(len=:), allocatable :: name
-    call c_f_str_ptr(garrow_field_to_string(field_days), name)
-    print*, name
-
-    call c_f_str_ptr(garrow_field_to_string(field_months), name)
-    print*, name
-
-    call c_f_str_ptr(garrow_field_to_string(field_years), name)
-    print*, name
-  end block
-
-  fields_list = g_list_alloc()
+  
+  fields_list = c_null_ptr
   fields_list = g_list_append(fields_list, field_days)
   fields_list = g_list_append(fields_list, field_months)
   fields_list = g_list_append(fields_list, field_years)
+
   schema = garrow_schema_new(fields_list)
+
+  block 
+    character(len=:), allocatable :: str
+    call c_f_str_ptr(garrow_schema_to_string(schema), str)
+    print*, str
+  end block
 
 end program main
