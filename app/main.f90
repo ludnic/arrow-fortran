@@ -8,6 +8,8 @@ program main
     garrow_schema_new, garrow_schema_add_field, garrow_field_get_name, garrow_field_get_data_type, &
     garrow_field_to_string, garrow_schema_to_string
 
+  use libarrow_glib, only: garrow_record_batch_new, garrow_record_batch_to_string
+
   use g, only: g_list_alloc, g_list_append, g_list_first, g_free, g_object_unref
 
   use util, only: c_f_str_ptr
@@ -16,8 +18,9 @@ program main
   type(c_ptr) :: int8builder, int16builder
   type(c_ptr) :: days, months, years
   type(c_ptr) :: field_days, field_months, field_years
-  type(c_ptr) :: fields_list
+  type(c_ptr) :: fields_list, columns_list
   type(c_ptr) :: schema 
+  type(c_ptr) :: rbatch
   integer(c_int) :: status 
   type(c_ptr) :: error
 
@@ -86,4 +89,22 @@ program main
     print*, str
   end block
 
+  ! With the schema and Arrays full of data, we can make our RecordBatch! Here,
+  ! each column is internally contiguous. This is in opposition to Tables, which we'll
+  ! see next.
+  
+  columns_list = c_null_ptr
+  columns_list = g_list_append(columns_list, days)
+  columns_list = g_list_append(columns_list, months)
+  columns_list = g_list_append(columns_list, years)
+  ! The RecordBatch needs the schema, length for columns, which all must match,
+  ! and the actual data itself.
+  rbatch = garrow_record_batch_new(schema, 5_c_int32_t, columns_list, error)
+
+  block 
+    character(len=:), allocatable :: str
+    call c_f_str_ptr(garrow_record_batch_to_string(rbatch, error), str)
+    print*, str
+  end block
+  
 end program main
